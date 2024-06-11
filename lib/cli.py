@@ -1,9 +1,17 @@
-# lib/cli.py
 
+import sqlite3
 from helpers import (
     exit_program,
     helper_1
 )
+
+def create_tables():
+    conn = sqlite3.connect("farmdb")
+    cursor = conn.cursor()
+
+    cursor.execute('''CREATE TABLE IF NOT EXIST products'''
+                )
+ 
 
 
 def main():
@@ -15,7 +23,7 @@ def main():
         elif choice == "1":
             helper_1()
         else:
-            print("Invalid choice")
+            print("Invalid option")
 
 
 def menu():
