@@ -1,4 +1,3 @@
-
 # Import libraries
 import sqlite3
 from helpers import exit_program
@@ -64,10 +63,16 @@ class Farm:
                    LEFT JOIN days ON products.day_id = days.day_id'''
         self.cursor.execute(query)
         return self.cursor.fetchall()
-    
-    def search_detail(self,farm_id):
-        pass
 
+
+    def search_product(self, search_term):
+        # Search for a product by name or day
+        self.cursor.execute('''SELECT products.farm_id, products.farm_product, products.quantity, days.day_id, days.day
+                               FROM products
+                               LEFT JOIN days ON products.day_id = days.day_id
+                               WHERE products.farm_product LIKE ? OR days.day LIKE ?''', ('%' + search_term + '%', '%' + search_term + '%'))
+        return self.cursor.fetchall()
+  
     def delete_product(self, farm_id):
         # Check if farm_id exists
         self.cursor.execute('SELECT * FROM products WHERE farm_id = ?', (farm_id,))
@@ -87,7 +92,7 @@ def menu():
     print("2. Add day")
     print("3. Link the product with the day collected")
     print("4. Display details")
-    print("5. Search detail")
+    print("5. Search product")
     print("6. Delete product")
     print("0. Exit the program")
 
@@ -114,6 +119,14 @@ def main():
             details = db.details()
             for detail in details:
                 print(f"On {detail[4]}, {detail[2]} {detail[1]} were collected.")
+        elif choice == "5":
+            search_term = input("Enter product name or day to search: ")
+            products = db.search_product(search_term)
+            if products:
+                for product in products:
+                    print(f"Farm ID: {product[0]}, Product: {product[1]}, Quantity: {product[2]}, Day ID: {product[3]}, Day: {product[4]}")
+            else:
+                print("No matching products found.")
         elif choice == "6":
             farm_id = int(input("Enter farm_id to DELETE : "))
             db.delete_product(farm_id)
