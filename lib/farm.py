@@ -213,7 +213,7 @@ def main():
         elif choice == "4":
             details = farm_db.details()
             for detail in details:
-                print(f"On {detail[4]}, {detail[2]} bags {detail[1]} were collected.")
+                print(f"On {detail[4]}, {detail[2]} bags of {detail[1]} were collected.")
         elif choice == "5":
             search_term = input("Enter product name or day to search: ")
             products = farm_db.search_product(search_term)
